@@ -14,6 +14,15 @@ class Api::ListsController < ApiController
       render json: { errors: list.errors.full_messages }, status: :unprocessable_entity
     end
   end
+  
+  def update
+    list = List.find(params[:id])
+    if list.update( list_params )
+      render json: list
+    else
+      render json: { errors: list.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
 
   def destroy
     begin
@@ -28,6 +37,6 @@ class Api::ListsController < ApiController
   private
 
   def list_params
-    params.require(:list).permit(:title)
+    params.require(:list).permit(:title, :permissions)
   end
 end
