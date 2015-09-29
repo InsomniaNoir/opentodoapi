@@ -1,20 +1,20 @@
-class Api::ListsController < ApplicationController
+class Api::ListsController < ApiController
   before_action :authenticated?
-  
+
   def index
     render json: users, each_serializer: ListSerializer
   end
-  
+
   def create
     list = List.new( list_params )
-    
+
     if list.save
       render json: list
     else
       render json: { errors: list.errors.full_messages }, status: :unprocessable_entity
     end
   end
-  
+
   def destroy
     begin
       list = List.find(params[:id])
@@ -23,5 +23,11 @@ class Api::ListsController < ApplicationController
     rescue ActiveRecord::RecordNotFound
       render :json => {}, :status => :not_found
     end
+  end
+
+  private
+
+  def list_params
+    params.require(:list).permit(:title)
   end
 end
